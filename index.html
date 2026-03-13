@@ -1,0 +1,166 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Check your GG Mouse Pro account premium status and order details.">
+    <meta name="keywords" content="gg mouse pro, gg mouse pro download, gg mouse pro apk, gg mouse pro app, gg mouse pro settings, gg mouse pro sensitivity, gg mouse pro for android, gg mouse pro ios, gg mouse pro free fire, gg mouse pro pubg, gg mouse pro bgmi, gg mouse pro cod mobile, gg mouse pro key mapping, gg mouse pro keyboard mouse mobile, gg mouse pro setup, gg mouse pro tutorial, gg mouse pro best settings, gg mouse pro pro settings, gg mouse pro sensitivity code, gg mouse pro config, gg mouse pro config file, gg mouse pro latest version, gg mouse pro update, gg mouse pro official, gg mouse pro gameplay, gg mouse pro aim settings, gg mouse pro headshot settings, gg mouse pro aim assist, gg mouse pro controller setup, gg mouse pro how to use, how to setup gg mouse pro, how to download gg mouse pro, how to install gg mouse pro, how to use keyboard mouse on mobile, keyboard mouse mobile gaming, mobile keyboard mouse setup, play mobile games with keyboard mouse, gg mouse pro review, gg mouse pro tips and tricks, gg mouse pro best key mapping, gg mouse pro free fire settings, gg mouse pro bgmi settings, gg mouse pro cod settings, gg mouse pro sensitivity settings, gg mouse pro gaming setup, gg mouse pro lag fix, gg mouse pro best configuration, gg mouse pro mobile gaming tool, gg mouse pro android setup">
+    <title>GG Mouse Pro</title>
+    <link rel="icon" href="https://dl.dropboxusercontent.com/scl/fi/fpqccl4ca6gu891fwlsy4/1736958747516.jpeg?rlkey=ikdvvjh8at60wnxmibmxqzesk&dl=0" type="image/jpeg">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="naagin.css">
+</head>
+
+<body>
+    <div class="container">
+<div class="logo">
+            <img src="https://dl.dropboxusercontent.com/scl/fi/fpqccl4ca6gu891fwlsy4/1736958747516.jpeg?rlkey=ikdvvjh8at60wnxmibmxqzesk&dl=0" alt="GG Mouse Pro Logo">
+            <div class="loader-container">
+              <div class="section-path loader-small">
+                <div class="globe">
+                  <div class="wrapper">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                  </div>
+                </div>
+              </div>
+             </div>
+        </div>
+           <!-- From Uiverse.io by JkHuger --> 
+            
+        <h3>Check Account Premium and Order Status</h3>
+        <p>To check whether the user is premium:</p>
+        <input id="account_username" class="input-field" type="text" placeholder="Enter email here">
+        <div class="button-row">
+            <button onclick="pasteFromClipboard()">Paste</button>
+            <button onclick="checkPremium()">Check Premium</button>
+        </div>
+
+        <p>To see the order detail (only works for order after Feb.7 2025)</p>
+        <p id="user_email_text"></p>
+        <input id="order_id" class="input-field" type="text" placeholder="Enter order id here. i.e. GPA.1234-5678">
+        <div class="button-row">
+            <button onclick="pasteOrderFromClipboard()">Paste</button>
+            <button onclick="checkOrder()">Check Order</button>
+        </div>
+
+        <div class="footer">
+            <p>Powered by <a href="#">GG Mouse Pro</a></p>
+        </div>
+    </div>
+
+    <script>
+                async function postData(url = '', data = {}) {
+            console.log(JSON.stringify(data));
+            const response = await fetch(url, {
+                method: 'POST',
+                mode: 'no-cors',
+                cache: 'no-cache',
+                headers: {},
+                redirect: 'follow',
+                referrerPolicy: 'no-referrer',
+            });
+            return response.json();
+        }
+
+        function checkPremium() {
+            let username = document.getElementById("account_username").value.trim();
+            if (username === "") {
+                alert("Please enter a valid email address.");
+                return;
+            }
+
+            $.ajax({
+                type: 'GET',
+                url: 'http://api.gmp.jyyxt.online/api/v3/users/is_premium/' + username,
+                headers: {
+                    'Access-Control-Allow-Origin': '*',
+                },
+                success: function(responseData, textStatus, jqXHR) {
+                    if (responseData["data"]["premium"]) {
+                        alert("The user is premium!! O usuário é premium!!");
+                    } else {
+                        alert("Not premium:( Não é premium :(");
+                    }
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    alert("Failed to check user premium " + textStatus);
+                }
+            });
+        }
+
+        function checkOrder(orderNum) {
+            orderNum = document.getElementById("order_id").value.trim();
+            if (!orderNum.startsWith("GPA")) {
+                alert("Please enter a valid order id. It should start with GPA.");
+                return;
+            }
+
+            $.ajax({
+                type: 'GET',
+                url: 'http://api.gmp.jyyxt.online/api/v3/orders/' + orderNum,
+                headers: {
+                    'Access-Control-Allow-Origin': '*',
+                },
+                success: function(responseData, textStatus, jqXHR) {
+                    try {
+                        navigator.clipboard.writeText(responseData["userEmail"]);
+                    } catch (e) {
+                    }
+                    alert("The order contains " + responseData["daysContain"] + " days premium subscription.\nThe order is credit to account: " + responseData["userEmail"] + ".\nThe account current expire time: " + responseData["userSubscriptionExpireTime"] + ".\nPurchase date is: " + responseData["purchaseDate"] + "\n\nThe user's email is automatically copied to your clipboard for you to paste conveniently");
+                    document.getElementById("user_email_text").textContent = "User email to paste manually: \n" + responseData["userEmail"];
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    if (jqXHR.status == 400)
+                    {
+                        alert("Order not found. This order doesn't exist or is made before Feb.7 2025");
+                    }
+                    else
+                    {
+                        alert("Failed to check user premium " + jqXHR.status);
+                    }
+                }
+            });
+        }
+
+        // PASTE button functionality
+        async function pasteFromClipboard() {
+            try {
+                const text = await navigator.clipboard.readText(); // Read from clipboard
+                document.getElementById("account_username").value = text; // Paste into input field
+            } catch (error) {
+                alert("Failed to read from clipboard. Please allow clipboard permissions.");
+            }
+        }
+        async function pasteOrderFromClipboard() {
+            try {
+                const text = await navigator.clipboard.readText(); // Read from clipboard
+                document.getElementById("order_id").value = text; // Paste into input field
+            } catch (error) {
+                alert("Failed to read from clipboard. Please allow clipboard permissions.");
+            }
+        }
+        // CLEAR button functionality
+        function clearInput() {
+            document.getElementById("account_username").value = ""; // Clear the input field
+        }
+
+    </script>
+
+</body>
+</html>
