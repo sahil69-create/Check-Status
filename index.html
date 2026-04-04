@@ -65,18 +65,16 @@
     </div>
 
     <script>
-                async function postData(url = '', data = {}) {
-            console.log(JSON.stringify(data));
-            const response = await fetch(url, {
-                method: 'POST',
-                mode: 'no-cors',
-                cache: 'no-cache',
-                headers: {},
-                redirect: 'follow',
-                referrerPolicy: 'no-referrer',
-            });
-            return response.json();
-        }
+        // Determine API base URL dynamically based on environment.
+        // - Localhost/Local IP: Use direct HTTP to the API.
+        // - Production (Vercel): Use relative path to proxy through vercel.json to avoid Mixed Content/CORS issues.
+        const isLocal = window.location.hostname === "localhost" || 
+                        window.location.hostname === "127.0.0.1" || 
+                        window.location.hostname.startsWith("192.168.") || 
+                        window.location.hostname.startsWith("10.") ||
+                        window.location.protocol === "file:";
+
+        const API_BASE = isLocal ? "http://api.gmp.jyyxt.online" : "";
 
         function checkPremium() {
             let username = document.getElementById("account_username").value.trim();
@@ -85,54 +83,101 @@
                 return;
             }
 
+            console.log("Checking premium for:", username, "at base:", API_BASE || "(relative proxy)");
+
             $.ajax({
                 type: 'GET',
-                url: 'http://api.gmp.jyyxt.online/api/v3/users/is_premium/' + username,
-                headers: {
-                    'Access-Control-Allow-Origin': '*',
-                },
+                url: API_BASE + '/api/v3/users/is_premium/' + username,
+                timeout: 10000, // 10 second timeout
                 success: function(responseData, textStatus, jqXHR) {
-                    if (responseData["data"]["premium"]) {
+                    console.log("Premium check success:", responseData);
+                    if (responseData && responseData.data && responseData.data.premium) {
                         alert("The user is premium!! O usuário é premium!!");
                     } else {
                         alert("Not premium:( Não é premium :(");
                     }
                 },
                 error: function(jqXHR, textStatus, errorThrown) {
-                    alert("Failed to check user premium " + textStatus);
+                    console.error("Premium check error:", {
+                        url: API_BASE + '/api/v3/users/is_premium/' + username,
+                        status: jqXHR.status,
+                        textStatus: textStatus,
+                        error: errorThrown,
+                        response: jqXHR.responseText
+                    });
+                    
+                    let errorMsg = "Failed to check user premium.\n";
+                    if (jqXHR.status === 0) {
+                        errorMsg += "Network error. This usually happens if the API is blocked or offline.\n\n" +
+                                    "If on Vercel: Ensure vercel.json is deployed.\n" +
+                                    "If on GitHub Pages: Direct HTTP calls are blocked on HTTPS sites.";
+                    } else if (jqXHR.status === 403) {
+                        errorMsg += "Access Forbidden (403). The server might be blocking requests from this origin.";
+                    } else {
+                        errorMsg += "Status: " + (jqXHR.status || "Unknown") + " (" + textStatus + ")";
+                    }
+                    alert(errorMsg);
                 }
             });
         }
 
-        function checkOrder(orderNum) {
-            orderNum = document.getElementById("order_id").value.trim();
+        function checkOrder() {
+            let orderNum = document.getElementById("order_id").value.trim();
             if (!orderNum.startsWith("GPA")) {
                 alert("Please enter a valid order id. It should start with GPA.");
                 return;
             }
 
+            console.log("Checking order:", orderNum, "at base:", API_BASE || "(relative proxy)");
+
             $.ajax({
                 type: 'GET',
-                url: 'http://api.gmp.jyyxt.online/api/v3/orders/' + orderNum,
-                headers: {
-                    'Access-Control-Allow-Origin': '*',
-                },
+                url: API_BASE + '/api/v3/orders/' + orderNum,
+                timeout: 10000,
                 success: function(responseData, textStatus, jqXHR) {
+                    console.log("Order check success:", responseData);
+                    
+                    // Safe access with defaults
+                    const email = responseData.userEmail || "Unknown";
+                    const days = responseData.daysContain || "0";
+                    const expire = responseData.userSubscriptionExpireTime || "Unknown";
+                    const date = responseData.purchaseDate || "Unknown";
+
                     try {
-                        navigator.clipboard.writeText(responseData["userEmail"]);
+                        if (responseData.userEmail) {
+                            navigator.clipboard.writeText(email);
+                        }
                     } catch (e) {
+                        console.warn("Clipboard copy failed:", e);
                     }
-                    alert("The order contains " + responseData["daysContain"] + " days premium subscription.\nThe order is credit to account: " + responseData["userEmail"] + ".\nThe account current expire time: " + responseData["userSubscriptionExpireTime"] + ".\nPurchase date is: " + responseData["purchaseDate"] + "\n\nThe user's email is automatically copied to your clipboard for you to paste conveniently");
-                    document.getElementById("user_email_text").textContent = "User email to paste manually: \n" + responseData["userEmail"];
+
+                    alert("The order contains " + days + " days premium subscription.\n" +
+                          "The order is credit to account: " + email + ".\n" +
+                          "The account current expire time: " + expire + ".\n" +
+                          "Purchase date is: " + date + "\n\n" +
+                          "The user's email is automatically copied to your clipboard for you to paste conveniently");
+                    
+                    document.getElementById("user_email_text").textContent = "User email to paste manually: \n" + email;
                 },
                 error: function(jqXHR, textStatus, errorThrown) {
-                    if (jqXHR.status == 400)
-                    {
+                    console.error("Order check error:", {
+                        url: API_BASE + '/api/v3/orders/' + orderNum,
+                        status: jqXHR.status,
+                        textStatus: textStatus,
+                        error: errorThrown,
+                        response: jqXHR.responseText
+                    });
+
+                    if (jqXHR.status === 400) {
                         alert("Order not found. This order doesn't exist or is made before Feb.7 2025");
-                    }
-                    else
-                    {
-                        alert("Failed to check user premium " + jqXHR.status);
+                    } else {
+                        let errorMsg = "Failed to check order.\n";
+                        if (jqXHR.status === 0) {
+                            errorMsg += "Network error. This usually happens if the API is blocked or offline.";
+                        } else {
+                            errorMsg += "Status: " + (jqXHR.status || "Unknown") + " (" + textStatus + ")";
+                        }
+                        alert(errorMsg);
                     }
                 }
             });
