@@ -1,0 +1,8 @@
+{
+  "rewrites": [
+    {
+      "source": "/api/v3/:path*",
+      "destination": "http://api.gmp.jyyxt.online/api/v3/:path*"
+    }
+  ]
+}
