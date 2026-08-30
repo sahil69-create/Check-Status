@@ -45,228 +45,167 @@
         theme: {
           extend: {
             colors: {
-              brand: {
-                50:  '#f5f3ff',
-                100: '#ede9fe',
-                200: '#ddd6fe',
-                300: '#c4b5fd',
-                400: '#a78bfa',
-                500: '#8b5cf6',
-                600: '#7c3aed',
-                700: '#6d28d9',
-                800: '#5b21b6',
-                900: '#4c1d95',
+              gmp: {
+                bg:     '#5A3FB3',
+                bg2:    '#7354d6',
+                card:   '#FFFFFF',
+                ink:    '#1F2937',
+                sub:    '#6B7280',
+                line:   '#E5E7EB',
+                muted:  '#F9FAFB',
+                brand:  '#6D28D9',
+                brand2: '#8B5CF6',
+                dark:   '#4B1F99',
               }
             },
             fontFamily: {
-              sans: ['Inter', 'system-ui', 'sans-serif'],
+              sans: ['Inter', 'system-ui', '-apple-system', 'Segoe UI', 'Roboto', 'sans-serif'],
             },
-            boxShadow: {
-              'soft': '0 10px 40px -10px rgba(124, 58, 237, 0.35)',
-              'glow': '0 0 60px -15px rgba(139, 92, 246, 0.55)',
-            },
-            animation: {
-              'float': 'float 6s ease-in-out infinite',
-              'fade-in-up': 'fadeInUp 0.7s ease-out both',
-            },
-            keyframes: {
-              float: {
-                '0%,100%': { transform: 'translateY(0px)' },
-                '50%':     { transform: 'translateY(-10px)' },
-              },
-              fadeInUp: {
-                '0%':   { opacity: 0, transform: 'translateY(20px)' },
-                '100%': { opacity: 1, transform: 'translateY(0)' },
-              }
-            }
           }
         }
       }
     </script>
 </head>
 
-<body class="min-h-screen w-full overflow-x-hidden font-sans bg-gradient-to-br from-slate-900 via-brand-900/80 to-slate-900 text-white relative">
+<body class="min-h-screen w-full bg-gmp-bg text-gmp-ink font-sans antialiased selection:bg-gmp-brand2 selection:text-white">
 
-  <!-- Animated background blobs -->
-  <div aria-hidden="true" class="pointer-events-none fixed inset-0 overflow-hidden -z-10">
-    <div class="absolute -top-24 -left-24 w-96 h-96 bg-brand-500/30 rounded-full blur-3xl animate-float"></div>
-    <div class="absolute top-1/3 -right-24 w-[28rem] h-[28rem] bg-fuchsia-500/20 rounded-full blur-3xl animate-float" style="animation-delay:1.5s"></div>
-    <div class="absolute -bottom-24 left-1/4 w-[26rem] h-[26rem] bg-sky-500/20 rounded-full blur-3xl animate-float" style="animation-delay:3s"></div>
+  <!-- Solid gradient background, no blobs, no glass -->
+  <div class="fixed inset-0 -z-10"
+       style="background: radial-gradient(1200px 600px at 20% -10%, rgba(255,255,255,0.08), transparent 60%),
+                      radial-gradient(900px 500px at 100% 110%, rgba(255,255,255,0.06), transparent 55%),
+                      linear-gradient(180deg, #5A3FB3 0%, #4e36a0 100%);">
   </div>
 
-  <main class="min-h-screen w-full flex items-center justify-center px-4 py-10 md:py-16">
-    <div class="w-full max-w-xl animate-fade-in-up">
+  <main class="min-h-screen w-full flex items-center justify-center px-4 py-12">
+    <div class="w-full max-w-md">
 
-      <!-- Header card -->
-      <div class="relative bg-white/10 backdrop-blur-2xl border border-white/15 rounded-3xl p-6 md:p-8 shadow-soft shadow-glow">
-        <div class="absolute -top-px left-6 right-6 h-px bg-gradient-to-r from-transparent via-white/40 to-transparent"></div>
+      <!-- Plain product card -->
+      <div class="bg-white rounded-2xl shadow-2xl shadow-black/20 overflow-hidden">
 
-        <div class="flex flex-col items-center text-center mb-6">
-          <div class="logo flex flex-col items-center">
-            <div class="relative mb-2">
-              <div class="absolute inset-0 bg-brand-500/40 blur-xl rounded-full"></div>
-              <img
-                src="https://dl.dropboxusercontent.com/scl/fi/fpqccl4ca6gu891fwlsy4/1736958747516.jpeg?rlkey=ikdvvjh8at60wnxmibmxqzesk&dl=0"
-                alt="GG Mouse Pro Logo"
-                class="relative w-20 h-20 md:w-24 md:h-24 rounded-2xl object-cover ring-2 ring-white/20 shadow-lg"
-              >
-            </div>
+        <!-- Header band -->
+        <div class="px-6 pt-6 pb-4 flex items-center gap-4 border-b border-gray-100">
+          <img
+            src="https://dl.dropboxusercontent.com/scl/fi/fpqccl4ca6gu891fwlsy4/1736958747516.jpeg?rlkey=ikdvvjh8at60wnxmibmxqzesk&dl=0"
+            alt="GG Mouse Pro"
+            class="w-14 h-14 rounded-xl object-cover"
+            onerror="this.style.display='none'"
+          >
+          <div class="flex-1 min-w-0">
+            <p class="text-xs uppercase tracking-[0.14em] text-gmp-brand font-semibold">GG Mouse Pro</p>
+            <h1 class="text-lg font-bold text-gmp-ink leading-tight">Premium Validator</h1>
+          </div>
+        </div>
 
-            <div class="loader-container mb-0">
-              <div class="section-path loader-small">
-                <div class="globe">
-                  <div class="wrapper">
-                    <span></span><span></span><span></span><span></span>
-                    <span></span><span></span><span></span><span></span>
-                    <span></span><span></span><span></span><span></span>
-                    <span></span><span></span><span></span><span></span>
-                  </div>
+        <!-- Subheader (keeps the loader — original to the app) -->
+        <div class="px-6 pt-4 pb-2 flex justify-center">
+          <div class="loader-container !my-0">
+            <div class="section-path loader-small">
+              <div class="globe">
+                <div class="wrapper">
+                  <span></span><span></span><span></span><span></span>
+                  <span></span><span></span><span></span><span></span>
+                  <span></span><span></span><span></span><span></span>
+                  <span></span><span></span><span></span><span></span>
                 </div>
               </div>
             </div>
           </div>
-
-          <div class="mt-2">
-            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/15 border border-emerald-400/30 text-emerald-300 text-xs font-medium mb-3">
-              <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-              Online • Official Premium Validator
-            </div>
-            <h1 class="text-2xl md:text-3xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-white via-brand-200 to-fuchsia-300">
-              Check Account Premium & Order Status
-            </h1>
-            <p class="mt-2 text-sm md:text-base text-slate-300/90">
-              Instantly verify premium status and lookup order details for GG Mouse Pro
-            </p>
-          </div>
         </div>
 
-        <!-- Divider -->
-        <div class="my-6 h-px w-full bg-gradient-to-r from-transparent via-white/20 to-transparent"></div>
+        <div class="px-6 pb-2 text-center">
+          <h2 class="text-[15px] font-semibold text-gmp-ink">
+            Check Account Status &amp; Order Details
+          </h2>
+        </div>
 
-        <!-- 1. Premium Check Section -->
-        <section class="space-y-4">
-          <div class="flex items-start gap-3">
-            <div class="shrink-0 w-10 h-10 rounded-xl bg-brand-500/20 border border-brand-400/30 flex items-center justify-center text-lg">
-              👑
-            </div>
-            <div class="flex-1">
-              <h2 class="text-base md:text-lg font-semibold text-white">
-                Check Premium Account
-              </h2>
-              <p class="text-xs md:text-sm text-slate-300/80 mt-0.5">
-                Enter the user's email to validate their premium subscription status
-              </p>
-            </div>
-          </div>
+        <!-- Body -->
+        <div class="px-6 pb-6 space-y-6">
 
-          <div class="relative">
-            <span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-base">📧</span>
+          <!-- PREMIUM CHECK -->
+          <section>
+            <label for="account_username" class="block text-sm font-medium text-gray-700 mb-2">
+              Premium check by email
+            </label>
             <input
               id="account_username"
-              class="input-field w-full !pl-11 !pr-4 !py-3 !bg-white/95 text-slate-800 placeholder:text-slate-400/80 !border-white/60 focus:!border-brand-500 focus:!ring-4 focus:!ring-brand-400/30 shadow-sm"
+              class="input-field w-full !bg-gray-50 !border-gray-200 !rounded-lg !py-2.5 !text-[14px] text-gray-800 placeholder:text-gray-400 focus:!border-gmp-brand2 focus:!ring-4 focus:!ring-gmp-brand2/15 focus:!bg-white transition"
               type="text"
-              placeholder="Enter email address here"
+              placeholder="Enter registered email"
             >
-          </div>
-
-          <div class="button-row !mb-0">
-            <button
-              type="button"
-              onclick="pasteFromClipboard()"
-              class="!bg-gradient-to-br !from-slate-600 !to-slate-700 !shadow-md hover:!-translate-y-0.5 active:!translate-y-0 transition-all !h-11 !text-base !px-5"
-            >
-              📋 Paste
-            </button>
-            <button
-              type="button"
-              onclick="checkPremium()"
-              class="!bg-gradient-to-br !from-brand-500 !to-fuchsia-500 !shadow-brand-500/30 hover:!-translate-y-0.5 active:!translate-y-0 transition-all !h-11 !text-base !font-semibold !px-5"
-            >
-              ✅ Check Premium
-            </button>
-          </div>
-        </section>
-
-        <!-- Divider -->
-        <div class="my-7 flex items-center gap-3">
-          <div class="h-px flex-1 bg-gradient-to-r from-transparent via-white/15 to-transparent"></div>
-          <span class="text-xs uppercase tracking-wider text-slate-400 font-semibold">or</span>
-          <div class="h-px flex-1 bg-gradient-to-r from-transparent via-white/15 to-transparent"></div>
-        </div>
-
-        <!-- 2. Order Check Section -->
-        <section class="space-y-4">
-          <div class="flex items-start gap-3">
-            <div class="shrink-0 w-10 h-10 rounded-xl bg-sky-500/20 border border-sky-400/30 flex items-center justify-center text-lg">
-              🧾
+            <div class="mt-2.5 flex gap-2">
+              <button
+                type="button"
+                onclick="pasteFromClipboard()"
+                class="!h-10 !rounded-lg !text-sm !font-medium !px-4 !bg-gray-100 !text-gray-700 hover:!bg-gray-200 active:!bg-gray-300 !shadow-none"
+              >
+                Paste
+              </button>
+              <button
+                type="button"
+                onclick="checkPremium()"
+                class="!h-10 !rounded-lg !text-sm !font-semibold !px-5 flex-1 !bg-gmp-brand text-white hover:!bg-gmp-dark active:!bg-gmp-dark !shadow-none"
+              >
+                Check Premium
+              </button>
             </div>
-            <div class="flex-1">
-              <h2 class="text-base md:text-lg font-semibold text-white">
-                Check Order Details
-              </h2>
-              <p class="text-xs md:text-sm text-slate-300/80 mt-0.5">
-                Enter your Order ID to view subscription days, expiry and purchase date
-                <span class="block text-amber-300/90 mt-1">
-                  ⚠ Works only for orders made after Feb 7, 2025
-                </span>
-              </p>
-            </div>
+          </section>
+
+          <!-- Separator (simple text, no line dance) -->
+          <div class="text-center text-xs text-gray-400 -mt-2">
+            or check an order below
           </div>
 
-          <div class="relative">
-            <span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-base">🧾</span>
+          <!-- ORDER CHECK -->
+          <section>
+            <label for="order_id" class="block text-sm font-medium text-gray-700 mb-2">
+              Order lookup
+              <span class="ml-1 text-xs font-normal text-gray-500">
+                (orders placed after Feb 7, 2025)
+              </span>
+            </label>
             <input
               id="order_id"
-              class="input-field w-full !pl-11 !pr-4 !py-3 !bg-white/95 text-slate-800 placeholder:text-slate-400/80 !border-white/60 focus:!border-sky-500 focus:!ring-4 focus:!ring-sky-400/30 shadow-sm"
+              class="input-field w-full !bg-gray-50 !border-gray-200 !rounded-lg !py-2.5 !text-[14px] text-gray-800 placeholder:text-gray-400 focus:!border-gmp-brand2 focus:!ring-4 focus:!ring-gmp-brand2/15 focus:!bg-white transition"
               type="text"
-              placeholder="Enter order id. Example: GPA.1234-5678"
+              placeholder="Order ID — e.g. GPA.1234-5678"
             >
-          </div>
 
-          <p
-            id="user_email_text"
-            class="hidden text-sm text-slate-200 bg-white/10 border border-white/10 rounded-xl p-3"
-          ></p>
+            <p id="user_email_text"
+               class="hidden mt-3 rounded-lg border border-gray-200 bg-gray-50 px-3 py-2.5 text-[13px] text-gray-700"></p>
 
-          <div class="button-row !mb-0">
-            <button
-              type="button"
-              onclick="pasteOrderFromClipboard()"
-              class="!bg-gradient-to-br !from-slate-600 !to-slate-700 !shadow-md hover:!-translate-y-0.5 active:!translate-y-0 transition-all !h-11 !text-base !px-5"
-            >
-              📋 Paste
-            </button>
-            <button
-              type="button"
-              onclick="checkOrder()"
-              class="!bg-gradient-to-br !from-sky-500 !to-indigo-500 !shadow-sky-500/30 hover:!-translate-y-0.5 active:!translate-y-0 transition-all !h-11 !text-base !font-semibold !px-5"
-            >
-              🔍 Check Order
-            </button>
-          </div>
-        </section>
+            <div class="mt-2.5 flex gap-2">
+              <button
+                type="button"
+                onclick="pasteOrderFromClipboard()"
+                class="!h-10 !rounded-lg !text-sm !font-medium !px-4 !bg-gray-100 !text-gray-700 hover:!bg-gray-200 active:!bg-gray-300 !shadow-none"
+              >
+                Paste
+              </button>
+              <button
+                type="button"
+                onclick="checkOrder()"
+                class="!h-10 !rounded-lg !text-sm !font-semibold !px-5 flex-1 !bg-gmp-brand text-white hover:!bg-gmp-dark active:!bg-gmp-dark !shadow-none"
+              >
+                Check Order
+              </button>
+            </div>
+          </section>
 
-        <!-- Footer -->
-        <footer class="footer mt-8 pt-6 border-t border-white/10 text-center">
-          <p class="text-slate-400 !mb-0 text-sm">
+          <!-- Footer -->
+          <div class="pt-4 border-t border-gray-100 text-center text-xs text-gray-500">
             Powered by
-            <a
-              href="https://www.ggmousepro.in/"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="text-brand-300 hover:text-brand-200 underline-offset-4 hover:underline font-semibold transition-colors"
-            >
+            <a href="https://www.ggmousepro.in/"
+               target="_blank" rel="noopener noreferrer"
+               class="text-gmp-brand font-medium hover:underline">
               GG Mouse Pro
             </a>
-          </p>
-          <p class="text-[11px] text-slate-500 mt-1.5">
-            © 2025 GG Mouse Pro — All trademarks belong to their respective owners.
-          </p>
-        </footer>
+          </div>
+        </div>
       </div>
 
-      <p class="text-center text-xs text-slate-500 mt-5">
-        🔒 Your data is never stored — all checks are performed in real-time via secure API
+      <!-- Tiny bottom line -->
+      <p class="mt-4 text-center text-[11px] text-white/60">
+        Real-time verification. No data is stored on this site.
       </p>
     </div>
   </main>
@@ -366,12 +305,11 @@
 
                     const emailBox = document.getElementById("user_email_text");
                     emailBox.innerHTML =
-                      '<div class="flex items-start gap-2">' +
-                        '<span class="text-brand-300 shrink-0 mt-0.5">📨</span>' +
-                        '<div class="flex-1">' +
-                          '<div class="text-[11px] uppercase tracking-wide text-slate-400 font-semibold mb-1">User Email (auto-copied to clipboard)</div>' +
-                          '<div class="text-white font-mono text-sm md:text-base break-all select-all">' + email + '</div>' +
-                        '</div>' +
+                      '<div class="text-[11px] uppercase tracking-wide text-gray-500 font-semibold mb-1">' +
+                        'User email (copied to clipboard)' +
+                      '</div>' +
+                      '<div class="font-mono text-sm text-gray-900 break-all select-all bg-white rounded-md px-2.5 py-1.5 border border-gray-200">' +
+                        email +
                       '</div>';
                     emailBox.classList.remove("hidden");
                 },

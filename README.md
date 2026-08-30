@@ -21,16 +21,15 @@
 
 ## ✨ Features
 
-- ✅ **Premium Account Check** — Validate whether any user has an active premium subscription using their email
-- 📦 **Order Status Lookup** — Fetch complete order details (days, email, expiry, purchase date) by order ID (GPA format)
-- 📋 **Auto-Clipboard Copy** — User email is automatically copied to clipboard and displayed in a styled info card
-- 📱 **Fully Responsive** — Pixel-perfect on mobile, tablet, and desktop
-- ⚡ **Instant Results** — 10-second timeout for fast feedback
-- 🔐 **Secure & Direct** — Production-ready proxy configuration via Vercel
-- 🎨 **Modern Glassmorphism UI** — Built with **Tailwind CSS**, gradient backgrounds, animated blurred blobs, and glow effects
-- ✨ **Micro-animations** — Floating elements, fade-in-up entrance, pulse badges, and button hover transitions
-- 🌙 **Dark Aesthetic Theme** — Premium gradient (slate → brand → slate) color scheme
-- 🎯 **Themed CTA Buttons** — Per-section color-coded gradients (Brand/Fuchsia for Premium, Sky/Indigo for Orders)
+- **Premium Account Check** — Validate any user's active premium subscription by email
+- **Order Status Lookup** — Fetch days, email, expiry and purchase date by Order ID (GPA format)
+- **Auto-Clipboard Copy** — Email auto-copied after order lookup + shown in a plain info box
+- **Fully Responsive** — Works on mobile, tablet and desktop
+- **Instant Results** — 10-second timeout for fast feedback
+- **Secure & Direct** — Production-ready Vercel proxy to avoid Mixed Content / CORS
+- **Clean Product UI** — Built with Tailwind CSS. Solid card layout, brand palette, no visual noise
+- **Accessible Form Labels** — Proper `<label for>` bindings, focused focus rings, readable contrast
+- **Plain Language Copy** — No emoji spam, no over-the-top marketing — just a tool that does what it says
 
 ## 🚀 Live Demo
 
@@ -73,11 +72,11 @@
 | Vercel | Deployment & API proxying |
 
 ### 🎨 Tailwind CSS Highlights
-- **Custom theme extension**: Brand color palette, soft/glow shadows, `float` + `fade-in-up` animations
-- **Layout**: Glassmorphism card (`backdrop-blur-2xl`) with gradient borders & glow shadows
-- **Backgrounds**: Animated blurred gradient blobs layered over slate→brand gradient
-- **Typography**: Inter font, gradient text on headings, responsive sizes
-- **Interactions**: Hover lift on buttons, pulse status indicator, focus ring on inputs
+- **Custom `gmp` color palette**: Brand purples tied to GG Mouse Pro identity
+- **Layout**: Plain white product card over a subtle gradient background
+- **Forms**: Accessible `<label>` tags, gray-50 inputs that go white on focus, brand-colored focus ring
+- **Buttons**: Two-tone visual weight (gray secondary + solid purple primary), no hover-lift gimmicks
+- **Typography**: Inter font stack, grounded sizes (14-15px body copy), uppercase micro-label in header
 
 ## 📁 Project Structure
 
