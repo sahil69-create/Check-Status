@@ -6,7 +6,7 @@
 
 **Official Premium Check Tool for GG Mouse Pro**
 
-[![Status](https://img.shields.io/badge/status-active-success.svg)](https://check-status-xi.vercel.app/)
+[![Status](https://img.shields.io/badge/status-active-success.svg)](https://check.ggmousepro.in/)
 [![Made with](https://img.shields.io/badge/made%20with-HTML%20%7C%20Tailwind%20CSS%20%7C%20JS-38bdf8.svg)]()
 [![Tailwind CSS](https://img.shields.io/badge/styled%20with-Tailwind%20CSS-06b6d4?logo=tailwind-css&logoColor=white)]()
 [![Vercel](https://img.shields.io/badge/deployed%20on-vercel-black.svg)](https://vercel.com/)
@@ -33,7 +33,7 @@
 
 ## 🚀 Live Demo
 
-👉 **Check Now**: [https://check-status-xi.vercel.app/](https://check-status-xi.vercel.app/)
+👉 **Check Now**: [https://check.ggmousepro.in/](https://check.ggmousepro.in/)
 
 ---
 
