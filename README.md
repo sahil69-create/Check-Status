@@ -7,7 +7,8 @@
 **Official Premium Check Tool for GG Mouse Pro**
 
 [![Status](https://img.shields.io/badge/status-active-success.svg)](https://check-status-xi.vercel.app/)
-[![Made with](https://img.shields.io/badge/made%20with-HTML%20%7C%20CSS%20%7C%20JS-orange.svg)]()
+[![Made with](https://img.shields.io/badge/made%20with-HTML%20%7C%20Tailwind%20CSS%20%7C%20JS-38bdf8.svg)]()
+[![Tailwind CSS](https://img.shields.io/badge/styled%20with-Tailwind%20CSS-06b6d4?logo=tailwind-css&logoColor=white)]()
 [![Vercel](https://img.shields.io/badge/deployed%20on-vercel-black.svg)](https://vercel.com/)
 
 </div>
@@ -22,10 +23,14 @@
 
 - ✅ **Premium Account Check** — Validate whether any user has an active premium subscription using their email
 - 📦 **Order Status Lookup** — Fetch complete order details (days, email, expiry, purchase date) by order ID (GPA format)
-- 📋 **Auto-Clipboard Copy** — User email is automatically copied to clipboard for quick access
-- 📱 **Fully Responsive** — Works seamlessly on mobile, tablet, and desktop
+- 📋 **Auto-Clipboard Copy** — User email is automatically copied to clipboard and displayed in a styled info card
+- 📱 **Fully Responsive** — Pixel-perfect on mobile, tablet, and desktop
 - ⚡ **Instant Results** — 10-second timeout for fast feedback
 - 🔐 **Secure & Direct** — Production-ready proxy configuration via Vercel
+- 🎨 **Modern Glassmorphism UI** — Built with **Tailwind CSS**, gradient backgrounds, animated blurred blobs, and glow effects
+- ✨ **Micro-animations** — Floating elements, fade-in-up entrance, pulse badges, and button hover transitions
+- 🌙 **Dark Aesthetic Theme** — Premium gradient (slate → brand → slate) color scheme
+- 🎯 **Themed CTA Buttons** — Per-section color-coded gradients (Brand/Fuchsia for Premium, Sky/Indigo for Orders)
 
 ## 🚀 Live Demo
 
@@ -61,10 +66,18 @@
 | Frontend | Purpose |
 |----------|---------|
 | HTML5 | Structure & Semantics |
-| CSS3 (Custom) | Modern UI styling (`naagin.css`) |
-| Vanilla JS | Core logic & clipboard operations |
+| **Tailwind CSS 3** | Utility-first framework for modern responsive design |
+| Custom CSS (`naagin.css`) | Loader animation + button / input base styles |
+| Vanilla JS | Core logic, clipboard, and dynamic UI updates |
 | jQuery | AJAX API calls |
 | Vercel | Deployment & API proxying |
+
+### 🎨 Tailwind CSS Highlights
+- **Custom theme extension**: Brand color palette, soft/glow shadows, `float` + `fade-in-up` animations
+- **Layout**: Glassmorphism card (`backdrop-blur-2xl`) with gradient borders & glow shadows
+- **Backgrounds**: Animated blurred gradient blobs layered over slate→brand gradient
+- **Typography**: Inter font, gradient text on headings, responsive sizes
+- **Interactions**: Hover lift on buttons, pulse status indicator, focus ring on inputs
 
 ## 📁 Project Structure
 
