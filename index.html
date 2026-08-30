@@ -210,10 +210,51 @@
     </div>
   </main>
 
+  <!-- Custom Modal -->
+  <div id="gmpModal"
+       class="fixed inset-0 z-50 hidden items-center justify-center px-4 sm:px-6">
+    <!-- Backdrop -->
+    <div id="gmpModalBackdrop"
+         class="absolute inset-0 bg-black/55 backdrop-blur-sm"></div>
+    <!-- Card -->
+    <div id="gmpModalCard"
+         role="alertdialog"
+         aria-modal="true"
+         aria-labelledby="gmpModalTitle"
+         class="relative w-full max-w-md bg-white rounded-2xl shadow-2xl overflow-hidden transform transition-all duration-200 scale-95 opacity-0">
+      <!-- Accent bar (colored by type) -->
+      <div id="gmpModalAccent" class="h-1.5 bg-gmp-brand"></div>
+      <div class="px-6 pt-5 pb-5">
+        <div class="flex items-start gap-3">
+          <!-- Type icon -->
+          <div id="gmpModalIconWrap"
+               class="shrink-0 w-10 h-10 rounded-full flex items-center justify-center text-lg bg-gmp-brand/10 text-gmp-brand">
+            <span id="gmpModalIcon">ℹ</span>
+          </div>
+          <div class="flex-1 min-w-0">
+            <h3 id="gmpModalTitle"
+                class="text-base font-semibold text-gray-900 leading-tight">
+              Notice
+            </h3>
+            <div id="gmpModalBody"
+                 class="mt-2 text-sm text-gray-700 leading-relaxed whitespace-pre-line break-words">
+            </div>
+          </div>
+        </div>
+        <div class="mt-5 flex justify-end gap-2">
+          <button id="gmpModalOk" type="button"
+                  class="h-10 px-5 rounded-lg bg-gmp-brand text-white text-sm font-semibold hover:bg-gmp-dark active:bg-gmp-dark transition">
+            OK
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
     <script>
         // Determine API base URL dynamically based on environment.
         // - Localhost/Local IP: Use direct HTTP to the API.
-        // - Production (Vercel): Use relative path to proxy through vercel.json to avoid Mixed Content/CORS issues.
+        // - Production: Use relative path to proxy through vercel.json to avoid Mixed Content/CORS issues.
         const isLocal = window.location.hostname === "localhost" || 
                         window.location.hostname === "127.0.0.1" || 
                         window.location.hostname.startsWith("192.168.") || 
@@ -222,10 +263,78 @@
 
         const API_BASE = isLocal ? "http://api.gmp.jyyxt.online" : "";
 
+        /* =========================================================
+         * Custom modal — replaces every alert() in the app.
+         * Types:  info | success | warning | error
+         * =======================================================*/
+        (function initModal() {
+            const root   = document.getElementById("gmpModal");
+            const card   = document.getElementById("gmpModalCard");
+            const bg     = document.getElementById("gmpModalBackdrop");
+            const okBtn  = document.getElementById("gmpModalOk");
+            const title  = document.getElementById("gmpModalTitle");
+            const body   = document.getElementById("gmpModalBody");
+            const accent = document.getElementById("gmpModalAccent");
+            const iconW  = document.getElementById("gmpModalIconWrap");
+            const icon   = document.getElementById("gmpModalIcon");
+
+            const presets = {
+                info:    { bg: "bg-sky-500",     wrap: "bg-sky-50 text-sky-600",   icon: "ℹ", t: "Information" },
+                success: { bg: "bg-emerald-500", wrap: "bg-emerald-50 text-emerald-600", icon: "✓", t: "Success" },
+                warning: { bg: "bg-amber-500",   wrap: "bg-amber-50 text-amber-600",   icon: "!", t: "Warning" },
+                error:   { bg: "bg-rose-500",    wrap: "bg-rose-50 text-rose-600",    icon: "×", t: "Error" },
+            };
+
+            function setPreset(type) {
+                const p = presets[type] || presets.info;
+                accent.setAttribute("class", "h-1.5 " + p.bg);
+                iconW.setAttribute("class",
+                    "shrink-0 w-10 h-10 rounded-full flex items-center justify-center text-lg font-bold " + p.wrap);
+                icon.textContent = p.icon;
+                return p.t;
+            }
+
+            function open() {
+                root.classList.remove("hidden");
+                root.classList.add("flex");
+                // Force reflow so transition runs
+                void card.offsetWidth;
+                card.classList.remove("scale-95", "opacity-0");
+                card.classList.add("scale-100", "opacity-100");
+                // Focus the OK button for accessibility
+                setTimeout(() => okBtn && okBtn.focus(), 30);
+            }
+            function close() {
+                card.classList.remove("scale-100", "opacity-100");
+                card.classList.add("scale-95", "opacity-0");
+                setTimeout(() => {
+                    root.classList.add("hidden");
+                    root.classList.remove("flex");
+                }, 180);
+            }
+
+            function showModal(message, type, customTitle) {
+                const defaultTitle = setPreset(type || "info");
+                title.textContent = (customTitle && customTitle.trim()) ? customTitle : defaultTitle;
+                body.textContent = (typeof message === "string") ? message : "";
+                open();
+            }
+
+            // Expose globally
+            window.showModal = showModal;
+
+            // Close handlers
+            okBtn && okBtn.addEventListener("click", close);
+            bg && bg.addEventListener("click", close);
+            document.addEventListener("keydown", function (e) {
+                if (e.key === "Escape" && !root.classList.contains("hidden")) close();
+            });
+        })();
+
         function checkPremium() {
             let username = document.getElementById("account_username").value.trim();
             if (username === "") {
-                alert("Please enter a valid email address.");
+                showModal("Please enter a registered email address.", "warning");
                 return;
             }
 
@@ -234,13 +343,23 @@
             $.ajax({
                 type: 'GET',
                 url: API_BASE + '/api/v3/users/is_premium/' + username,
-                timeout: 10000, // 10 second timeout
+                timeout: 10000,
                 success: function(responseData, textStatus, jqXHR) {
                     console.log("Premium check success:", responseData);
                     if (responseData && responseData.data && responseData.data.premium) {
-                        alert("The user is premium!! O usuário é premium!!");
+                        showModal(
+                            "Premium account confirmed.\n\n" +
+                            "O usuário é premium.",
+                            "success",
+                            "Premium Verified"
+                        );
                     } else {
-                        alert("Not premium:( Não é premium :(");
+                        showModal(
+                            "No active premium subscription found for this account.\n\n" +
+                            "Não é premium.",
+                            "warning",
+                            "Not Premium"
+                        );
                     }
                 },
                 error: function(jqXHR, textStatus, errorThrown) {
@@ -251,18 +370,22 @@
                         error: errorThrown,
                         response: jqXHR.responseText
                     });
-                    
-                    let errorMsg = "Failed to check user premium.\n";
+
+                    let errorMsg = "We couldn't complete this premium check right now.\n\n";
                     if (jqXHR.status === 0) {
-                        errorMsg += "Network error. This usually happens if the API is blocked or offline.\n\n" +
-                                    "If on Vercel: Ensure vercel.json is deployed.\n" +
-                                    "If on GitHub Pages: Direct HTTP calls are blocked on HTTPS sites.";
+                        errorMsg +=
+                            "Network error — the API may be offline or unreachable from this network.\n\n" +
+                            "If deployed on Vercel, ensure vercel.json is deployed.\n" +
+                            "If hosted on GitHub Pages (HTTPS), direct HTTP calls to the API are blocked by the browser.";
                     } else if (jqXHR.status === 403) {
-                        errorMsg += "Access Forbidden (403). The server might be blocking requests from this origin.";
+                        errorMsg +=
+                            "Access forbidden (403). The API may be rejecting requests from this origin.";
                     } else {
-                        errorMsg += "Status: " + (jqXHR.status || "Unknown") + " (" + textStatus + ")";
+                        errorMsg +=
+                            "HTTP status: " + (jqXHR.status || "Unknown") +
+                            " (" + textStatus + ")";
                     }
-                    alert(errorMsg);
+                    showModal(errorMsg, "error", "Premium Check Failed");
                 }
             });
         }
@@ -270,7 +393,11 @@
         function checkOrder() {
             let orderNum = document.getElementById("order_id").value.trim();
             if (!orderNum.startsWith("GPA")) {
-                alert("Please enter a valid order id. It should start with GPA.");
+                showModal(
+                    "Please enter a valid Order ID.\n\nOrder IDs must begin with 'GPA.' (e.g. GPA.1234-5678).",
+                    "warning",
+                    "Invalid Order ID"
+                );
                 return;
             }
 
@@ -282,26 +409,32 @@
                 timeout: 10000,
                 success: function(responseData, textStatus, jqXHR) {
                     console.log("Order check success:", responseData);
-                    
-                    // Safe access with defaults
-                    const email = responseData.userEmail || "Unknown";
-                    const days = responseData.daysContain || "0";
-                    const expire = responseData.userSubscriptionExpireTime || "Unknown";
-                    const date = responseData.purchaseDate || "Unknown";
 
+                    // Safe access with defaults
+                    const email  = responseData.userEmail               || "Unknown";
+                    const days   = String(responseData.daysContain      || "0");
+                    const expire = responseData.userSubscriptionExpireTime || "Unknown";
+                    const date   = responseData.purchaseDate            || "Unknown";
+
+                    let copied = false;
                     try {
                         if (responseData.userEmail) {
-                            navigator.clipboard.writeText(email);
+                            navigator.clipboard && navigator.clipboard.writeText(email);
+                            copied = true;
                         }
                     } catch (e) {
                         console.warn("Clipboard copy failed:", e);
                     }
 
-                    alert("The order contains " + days + " days premium subscription.\n" +
-                          "The order is credit to account: " + email + ".\n" +
-                          "The account current expire time: " + expire + ".\n" +
-                          "Purchase date is: " + date + "\n\n" +
-                          "The user's email is automatically copied to your clipboard for you to paste conveniently");
+                    const body =
+                        "Order ID:   " + orderNum + "\n" +
+                        "Days:       " + days + " days premium\n" +
+                        "Linked to:  " + email + "\n" +
+                        "Expires:    " + expire + "\n" +
+                        "Purchased:  " + date +
+                        (copied ? "\n\nThe linked email has been copied to your clipboard." : "");
+
+                    showModal(body, "success", "Order Details");
 
                     const emailBox = document.getElementById("user_email_text");
                     emailBox.innerHTML =
@@ -323,15 +456,22 @@
                     });
 
                     if (jqXHR.status === 400) {
-                        alert("Order not found. This order doesn't exist or is made before Feb.7 2025");
+                        showModal(
+                            "Order not found.\n\nThis order ID does not exist, or was placed before Feb 7, 2025.",
+                            "warning",
+                            "No Matching Order"
+                        );
                     } else {
-                        let errorMsg = "Failed to check order.\n";
+                        let errorMsg = "We couldn't load this order right now.\n\n";
                         if (jqXHR.status === 0) {
-                            errorMsg += "Network error. This usually happens if the API is blocked or offline.";
+                            errorMsg +=
+                                "Network error — the API may be offline or blocked from this network.";
                         } else {
-                            errorMsg += "Status: " + (jqXHR.status || "Unknown") + " (" + textStatus + ")";
+                            errorMsg +=
+                                "HTTP status: " + (jqXHR.status || "Unknown") +
+                                " (" + textStatus + ")";
                         }
-                        alert(errorMsg);
+                        showModal(errorMsg, "error", "Order Lookup Failed");
                     }
                 }
             });
@@ -340,23 +480,31 @@
         // PASTE button functionality
         async function pasteFromClipboard() {
             try {
-                const text = await navigator.clipboard.readText(); // Read from clipboard
-                document.getElementById("account_username").value = text; // Paste into input field
+                const text = await navigator.clipboard.readText();
+                document.getElementById("account_username").value = text;
             } catch (error) {
-                alert("Failed to read from clipboard. Please allow clipboard permissions.");
+                showModal(
+                    "We couldn't access your clipboard. Please paste the email manually using Ctrl+V.",
+                    "info",
+                    "Clipboard Unavailable"
+                );
             }
         }
         async function pasteOrderFromClipboard() {
             try {
-                const text = await navigator.clipboard.readText(); // Read from clipboard
-                document.getElementById("order_id").value = text; // Paste into input field
+                const text = await navigator.clipboard.readText();
+                document.getElementById("order_id").value = text;
             } catch (error) {
-                alert("Failed to read from clipboard. Please allow clipboard permissions.");
+                showModal(
+                    "We couldn't access your clipboard. Please paste the order ID manually using Ctrl+V.",
+                    "info",
+                    "Clipboard Unavailable"
+                );
             }
         }
         // CLEAR button functionality
         function clearInput() {
-            document.getElementById("account_username").value = ""; // Clear the input field
+            document.getElementById("account_username").value = "";
         }
 
     </script>
